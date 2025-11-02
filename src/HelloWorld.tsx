@@ -6,27 +6,24 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { Logo } from "./HelloWorld/Logo";
-import { Subtitle } from "./HelloWorld/Subtitle";
 import { Title } from "./HelloWorld/Title";
 import { z } from "zod";
-import { zColor } from "@remotion/zod-types";
+import { SvgFlyIn } from "./SvgFlyIn";
+
+const fillColor = require("./colors.json")
+
+console.log(fillColor)
 
 export const myCompSchema = z.object({
-  titleText: z.string(),
-  titleColor: zColor(),
-  logoColor1: zColor(),
-  logoColor2: zColor(),
 });
 
-export const HelloWorld: React.FC<z.infer<typeof myCompSchema>> = ({
-  titleText: propOne,
-  titleColor: propTwo,
-  logoColor1,
-  logoColor2,
-}) => {
+export const HelloWorld: React.FC<z.infer<typeof myCompSchema>> = () => {
   const frame = useCurrentFrame();
   const { durationInFrames, fps } = useVideoConfig();
+
+  const colorIndex = Math.floor(
+    interpolate(frame, [0, 600], [0, fillColor.length - 1], { extrapolateRight: "clamp" })
+  );
 
   // Animate from 0 to 1 after 25 frames
   const logoTranslationProgress = spring({
@@ -57,19 +54,18 @@ export const HelloWorld: React.FC<z.infer<typeof myCompSchema>> = ({
 
   // A <AbsoluteFill> is just a absolutely positioned <div>!
   return (
-    <AbsoluteFill style={{ backgroundColor: "white" }}>
+    <AbsoluteFill style={{ backgroundColor: "black" }}>
       <AbsoluteFill style={{ opacity }}>
-        <AbsoluteFill style={{ transform: `translateY(${logoTranslation}px)` }}>
-          <Logo logoColor1={logoColor1} logoColor2={logoColor2} />
+        <AbsoluteFill style={{
+          transform: `translateY(${logoTranslation}px)`,
+        }}>
+          <SvgFlyIn color={fillColor[colorIndex]} />
         </AbsoluteFill>
         {/* Sequences can shift the time for its children! */}
         <Sequence from={35}>
-          <Title titleText={propOne} titleColor={propTwo} />
+          <Title titleText="Welcome to Hieronymus" titleColor={fillColor[colorIndex]} />
         </Sequence>
         {/* The subtitle will only enter on the 75th frame. */}
-        <Sequence from={75}>
-          <Subtitle />
-        </Sequence>
       </AbsoluteFill>
     </AbsoluteFill>
   );
