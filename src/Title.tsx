@@ -1,22 +1,5 @@
 import React from "react";
 import { spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { FONT_FAMILY } from "./constants";
-
-const title: React.CSSProperties = {
-  fontFamily: FONT_FAMILY,
-  fontWeight: "bold",
-  fontSize: 100,
-  textAlign: "center",
-  position: "absolute",
-  bottom: 160,
-  width: "100%",
-};
-
-const word: React.CSSProperties = {
-  marginLeft: 10,
-  marginRight: 10,
-  display: "inline-block",
-};
 
 export const Title: React.FC<{
   readonly titleText: string;
@@ -24,14 +7,25 @@ export const Title: React.FC<{
 }> = ({ titleText, titleColor }) => {
   const videoConfig = useVideoConfig();
   const frame = useCurrentFrame();
-
+  let deg = 0
   const words = titleText.split(" ");
 
+  if (frame > 200) {
+    deg = 45
+  }
+
   return (
-    <h1 style={title}>
+    <h1 style={{
+      fontWeight: "bold",
+      fontSize: 100,
+      textAlign: "center",
+      position: "absolute",
+      bottom: 160,
+      width: "100%",
+    }}>
       {words.map((t, i) => {
         const delay = i * 5;
-
+        let trandform = ""
         const scale = spring({
           fps: videoConfig.fps,
           frame: frame - delay,
@@ -39,14 +33,21 @@ export const Title: React.FC<{
             damping: 200,
           },
         });
-
+        if (frame > 200) {
+          trandform = `scale(${scale}) /*skew(${0.2 * deg}deg, ${deg}deg)*/ rotateX(${((9 * frame) % 360) * ((-1) ^ i)}deg)`
+        }
+        if (frame < 50) {
+          return <></>
+        }
         return (
           <span
             key={t}
             style={{
-              ...word,
+              marginLeft: 10,
+              marginRight: 10,
               color: titleColor,
-              transform: `scale(${scale})`,
+              display: "inline-block",
+              transform: trandform,
             }}
           >
             {t}

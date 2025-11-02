@@ -6,7 +6,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { Title } from "./HelloWorld/Title";
+import { Title } from "./Title";
 import { z } from "zod";
 import { SvgFlyIn } from "./SvgFlyIn";
 
@@ -54,7 +54,7 @@ export const HelloWorld: React.FC<z.infer<typeof myCompSchema>> = () => {
 
   // A <AbsoluteFill> is just a absolutely positioned <div>!
   return (
-    <AbsoluteFill style={{ backgroundColor: "black" }}>
+    <AbsoluteFill style={{ backgroundColor: "" }}>
       <AbsoluteFill style={{ opacity }}>
         <AbsoluteFill style={{
           transform: `translateY(${logoTranslation}px)`,
